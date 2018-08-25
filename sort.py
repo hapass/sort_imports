@@ -34,12 +34,13 @@ for changed_file_name in sys.stdin:
         for import_group in import_group_dictionary.values():
             import_group.sort()
 
+        changed_file.seek(0)
         for line_number, line in enumerate(lines_without_import_groups):
             if line_number in import_group_dictionary:
                 for import_line in import_group_dictionary[line_number]:
-                    print import_line
+                    changed_file.write(import_line)
 
-            print line
+            changed_file.write(line)
 
 
 
