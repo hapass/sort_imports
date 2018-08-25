@@ -38,6 +38,7 @@ for changed_file_name in sys.stdin:
 
         total_import_lines = 0
         changed_file.seek(0)
+        changed_file.truncate()
 
         for line_number, line in enumerate(lines_without_imports):
             def get_actual_line_number():
