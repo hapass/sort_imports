@@ -40,21 +40,19 @@ for changed_file_name in sys.stdin:
         changed_file.seek(0)
 
         for line_number, line in enumerate(lines_without_imports):
-            actual_line_number = total_import_lines + line_number
+            def get_actual_line_number():
+                return total_import_lines + line_number
 
-            if actual_line_number in import_group_dictionary:
-                for import_line in import_group_dictionary[actual_line_number]:
+            if get_actual_line_number() in import_group_dictionary:
+                for import_line in import_group_dictionary[get_actual_line_number()]:
                     if debug:
-                        print ("%d: %s" % (line_number + total_import_lines, import_line))
+                        print ("%d: %s" % (get_actual_line_number(), import_line))
                     else:
                         changed_file.write(import_line)
 
                     total_import_lines += 1
 
             if debug:
-                print ("%d: %s" % (actual_line_number, line))
+                print ("%d: %s" % (get_actual_line_number(), line))
             else:
                 changed_file.write(line)
-
-
-
