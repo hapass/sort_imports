@@ -34,7 +34,7 @@ for changed_file_name in sys.stdin:
             lines_without_imports.append(line)
 
         for import_group in import_group_dictionary.values():
-            import_group.sort()
+            import_group.sort(key=lambda x: x.lower())
 
         total_import_lines = 0
         changed_file.seek(0)
