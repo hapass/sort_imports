@@ -1,6 +1,6 @@
 #create temporary files from test files with unsorted imports
-for file in *.test; 
-    do cp "$file" "$(echo "$file" | rev | cut -c6- | rev).temp";
+for file in *.test; do
+    cp "$file" "$(echo "$file" | rev | cut -c6- | rev).temp";
 done
 
 #sort imports in temporary files
