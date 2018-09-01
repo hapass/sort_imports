@@ -3,27 +3,17 @@ import sys
 
 import_line_prefix = "import "
 
-def appendEndlineToLastImport(imports):
-    imports_length = len(imports)
-
-    if imports_length <= 0:
-        return
-
-    last_element_index = imports_length - 1
-    imports[last_element_index] = imports[last_element_index] + "\n"
-
 def readImportsGroup(changed_file):
     result = []
     while True:
         line = changed_file.readline()
 
-        if not line:
-            appendEndlineToLastImport(result)
-            break
-
         if not line.startswith(import_line_prefix):
             break
-        
+
+        if not line.endswith("\n"):
+            line = line + "\n"
+
         result.append(line)
 
     return result
