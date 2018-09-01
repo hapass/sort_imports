@@ -22,6 +22,14 @@ for file in *.temp; do
         echo "${green}$(echo "$file" | rev | cut -c6- | rev) test passed.${reset}"
     else
         echo "${red}$(echo "$file" | rev | cut -c6- | rev) test failed.${reset}"
+        echo "Actual:"
+        echo "-------start-------"
+        cat "$file"
+        echo "--------end--------"
+        echo "Expected:"
+        echo "-------start-------"
+        cat "$(echo "$file" | rev | cut -c6- | rev).verify"
+        echo "--------end--------"
     fi
 
     #remove temporary file
