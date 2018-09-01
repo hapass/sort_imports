@@ -1,0 +1,22 @@
+import a;
+import c;
+import d;
+
+import b;
+import y;
+import z;
+#if flash
+import o;
+import p;
+import q;
+#end
+
+import j;
+
+class EmptyClass {}
+
+import a;
+import b;
+import z;
+
+class AnotherClass {}

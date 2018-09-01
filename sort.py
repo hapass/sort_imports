@@ -1,62 +1,62 @@
 import fileinput
 import sys
 
-debug = False
-file_mask = ".hx"
 import_line_prefix = "import "
+
+def appendEndlineToLastImport(imports):
+    imports_length = len(imports)
+
+    if imports_length <= 0:
+        return
+
+    last_element_index = imports_length - 1
+    imports[last_element_index] = imports[last_element_index] + "\n"
+
+def readImportsGroup(changed_file):
+    result = []
+    while True:
+        line = changed_file.readline()
+
+        if not line:
+            appendEndlineToLastImport(result)
+            break
+
+        if not line.startswith(import_line_prefix):
+            break
+        
+        result.append(line)
+
+    return result
+
+def writeImportsGroup(changed_file, imports):
+    for import_line in imports:
+        changed_file.write(import_line)
+
+def sortImportsInGroup(changed_file, group_start_position):
+    changed_file.seek(group_start_position)
+    imports = readImportsGroup(changed_file)
+
+    imports.sort(key=lambda x: x.translate(None, ".;").lower())
+
+    changed_file.seek(group_start_position)
+    writeImportsGroup(changed_file, imports)
+
+def sortImportsInFile(changed_file_name):
+    with open(changed_file_name, "r+") as changed_file:
+        while True:
+            line_start_position = changed_file.tell()
+            line = changed_file.readline()
+
+            if not line:
+                break
+
+            if line.startswith(import_line_prefix):
+                sortImportsInGroup(changed_file, line_start_position)
 
 for changed_file_name in sys.stdin:
     changed_file_name = changed_file_name.strip("\n ")
 
-    if not changed_file_name or not changed_file_name.endswith(file_mask):
-        continue
-
     try:
-        with open(changed_file_name, "r+") as changed_file:
-            lines_without_imports = []
-            import_group_dictionary = {}
-
-            inside_import_group = False
-            current_import_group = 0
-
-            for line_number, line in enumerate(changed_file.readlines()):
-                if not inside_import_group and line.startswith(import_line_prefix):
-                    current_import_group = line_number
-                    import_group_dictionary[current_import_group] = []
-                    inside_import_group = True
-
-                if inside_import_group and not line.startswith(import_line_prefix):
-                    inside_import_group = False
-
-                if inside_import_group:
-                    import_group_dictionary[current_import_group].append(line)
-                    continue
-
-                lines_without_imports.append(line)
-
-            for import_group in import_group_dictionary.values():
-                import_group.sort(key=lambda x: x.lower())
-
-            total_import_lines = 0
-            changed_file.seek(0)
-            changed_file.truncate()
-
-            for line_number, line in enumerate(lines_without_imports):
-                def get_actual_line_number():
-                    return total_import_lines + line_number
-
-                if get_actual_line_number() in import_group_dictionary:
-                    for import_line in import_group_dictionary[get_actual_line_number()]:
-                        if debug:
-                            print ("%d: %s" % (get_actual_line_number(), import_line))
-                        else:
-                            changed_file.write(import_line)
-
-                        total_import_lines += 1
-
-                if debug:
-                    print ("%d: %s" % (get_actual_line_number(), line))
-                else:
-                    changed_file.write(line)
+        sortImportsInFile(changed_file_name)
     except IOError:
-        print "File is removed or renamed: " + changed_file_name
+        print "File cannot be processed: " + changed_file_name
