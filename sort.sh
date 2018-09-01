@@ -1,1 +1,1 @@
-git status -s | cut -c4- | python sort.py
+git status -s | grep .*hx$ | cut -c4- | python sort.py
