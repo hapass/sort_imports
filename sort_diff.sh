@@ -1,0 +1,1 @@
+git diff develop --name-only | grep .*hx$ | python sort.py

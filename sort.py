@@ -26,7 +26,7 @@ def sortImportsInGroup(changed_file, group_start_position):
     changed_file.seek(group_start_position)
     imports = readImportsGroup(changed_file)
 
-    imports.sort(key=lambda x: x.translate(None, ".;").lower())
+    imports.sort(key=lambda x: x.lower().strip("; "))
 
     changed_file.seek(group_start_position)
     writeImportsGroup(changed_file, imports)
